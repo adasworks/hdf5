@@ -510,7 +510,13 @@ CHECK_FUNCTION_EXISTS (asprintf          ${HDF_PREFIX}_HAVE_ASPRINTF)
 CHECK_FUNCTION_EXISTS (vasprintf         ${HDF_PREFIX}_HAVE_VASPRINTF)
 CHECK_FUNCTION_EXISTS (waitpid           ${HDF_PREFIX}_HAVE_WAITPID)
 
-CHECK_FUNCTION_EXISTS (vsnprintf         ${HDF_PREFIX}_HAVE_VSNPRINTF)
+if(MSVC)
+  # VS2015 (MSVC14): `check_function_exists` fails to locate vsnprintf
+  # we assume here all MSVC versions have this function
+  set(${HDF_PREFIX}_HAVE_VSNPRINTF 1)
+else()
+  CHECK_FUNCTION_EXISTS (vsnprintf         ${HDF_PREFIX}_HAVE_VSNPRINTF)
+endif()
 if (NOT WINDOWS)
   if (${HDF_PREFIX}_HAVE_VSNPRINTF)
     HDF_FUNCTION_TEST (VSNPRINTF_WORKS)
